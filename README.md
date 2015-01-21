@@ -22,7 +22,7 @@ With my Arduino Nano this was /dev/ttyUSB0, but you might have to change this.
 The user running the script must be in the dialout group (on Debian at least), and I run it using 
 screen:
 
-/usr/bin/screen -S powerusage <YOURPATH>/readpowerusage.pl
+/usr/bin/screen -S powerusage YOURPATH/readpowerusage.pl
 
 Detach from screen using ctrl+a+d.
 
@@ -40,10 +40,13 @@ To set up the database use the following commands. These settings must be update
 perl scripts:
 
 % mysql -uroot -p
+
 mysql> create database powerusage;
+
 mysql> grant all on powerusage.* to power@localhost identified by 'YOURPASSWORD';
 
 % mysql -uroot -p powerusage < sql/powerusage.sql
 
 In the table called 'manualreading' enter the current value from your power meter, in kWh:
-mysql> insert into manualreading (kwh,timestamp) values (<YOURPOWERREADING>, UNIX_TIMESTAMP());
+
+mysql> insert into manualreading (kwh,timestamp) values (YOURPOWERREADING, UNIX_TIMESTAMP());
