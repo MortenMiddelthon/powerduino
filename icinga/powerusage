@@ -1,0 +1,114 @@
+#!/usr/bin/perl
+
+use strict; 
+use warnings;
+use Time::Local;
+# DB Settings
+use DBI;
+my $dbuser = "power";
+my $dbpasswd = "YOURSQLPASSWORD";
+my $dbname = "dbi:mysql:powerusage";
+my $dbtable = "log";
+my $dbh = DBI->connect($dbname,$dbuser,$dbpasswd) or die "Connection Error: $DBI::errstr\n";
+
+# Turn on/off debug output
+my $debug = 0;
+
+my @now = localtime(time);
+
+my $startofday = timelocal(0,0,0,$now[3],$now[4],$now[5]); 
+my $startofmonth = timelocal(0,0,0,1,$now[4],$now[5]); 
+my $startofyear = timelocal(0,0,0,1,0,$now[5]); 
+
+# Get usage for today
+my $watthourstoday = &getusage($startofday);
+my $watthoursmonth = &getusage($startofmonth);
+my $watthoursyear = &getusage($startofyear);
+
+# Nagios output variables
+my $critical = "";
+
+# Get the last manual reading
+my $query_reading = "select * from manualreading order by timestamp DESC limit 1";
+print "Last reading query: $query_reading\n" if $debug;
+my $q = $dbh->prepare($query_reading);
+$q->execute();
+# Store the last reading timestamp and value
+my $last_timestamp;
+my $last_reading;
+# Store human readable date
+my $now;
+if($q->rows == 1) {
+	my $reading = $q->fetchrow_hashref();
+	$last_timestamp = $reading->{'timestamp'};
+	$last_reading = $reading->{'kwh'};
+	if($debug) {
+		$now = localtime($last_timestamp);
+		print "Last reading timestamp: $last_timestamp ($now)\n";
+		print "Last reading value: $last_reading kWh\n";
+	}
+}
+else {
+	$critical .= "Incorrect SQL query reply\nSQL query: $query_reading\n";
+}
+$q->finish();
+
+# Get the amount of pulses/blink since last reading
+my $query_pulses = "select * from log where timestamp >= $last_timestamp";
+my $q_pulse = $dbh->prepare($query_pulses);
+$q_pulse->execute();
+# Add up pulses
+my $kwh = 0;
+while(my $row = $q_pulse->fetchrow_hashref) {
+	$kwh += $row->{'blinks'};
+}
+if($debug) {
+	print "Pulses/blinks since $now: $kwh\n";
+	print "Power usage: ";
+	print $kwh / 1000;
+	print " kWh\n";
+}
+if($kwh == 0) {
+	$critical .= "Failed to calculate kWh\nSQL query: $query_pulses\n";
+}
+$q_pulse->finish();
+$dbh->disconnect();
+
+# Print nagios output. Script only outputs OK or critical levels
+if($critical ne "") {
+	print "CRITICAL: $critical";
+	exit 2;
+}
+else {
+	print "OK: Power usage: ", $last_reading+($kwh/1000), " kWh\n";
+	print "Power usage so far today: $watthourstoday Wh\n";
+	print "Power usage so far this month: $watthoursmonth Wh\n";
+	print "Power usage so far this year: $watthoursyear Wh\n";
+	print "| PowerUsage=", ($last_reading*1000)+$kwh, "Wh;\n";
+	exit 0;
+}
+
+sub getusage {
+	my $timestamp = shift;
+	if(!defined $timestamp) {
+		return 0;
+	}
+	# Get usage since $timestamp
+	my $query = "select * from log where timestamp >= $timestamp";
+	my $q = $dbh->prepare($query);
+	$q->execute();
+	# Wh counter
+	my $watthours = 0;
+	if($q->rows > 0) {
+		while(my $row = $q->fetchrow_hashref()) {
+			$watthours += $row->{'blinks'};
+		}
+	}
+	else {
+		print "SQL query failed: $query\n";
+	}
+	$q->finish();
+	return $watthours;
+}
+
+
