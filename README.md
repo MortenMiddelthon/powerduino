@@ -44,3 +44,6 @@ mysql> create database powerusage;
 mysql> grant all on powerusage.* to power@localhost identified by 'YOURPASSWORD';
 
 % mysql -uroot -p powerusage < sql/powerusage.sql
+
+In the table called 'manualreading' enter the current value from your power meter, in kWh:
+mysql> insert into manualreading (kwh,timestamp) values (<YOURPOWERREADING>, UNIX_TIMESTAMP());
