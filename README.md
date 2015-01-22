@@ -1,6 +1,6 @@
 # powerduino
 
-Please check the GitHub site for all the examples and requied files:
+Please check the GitHub site for all the examples and required files:
 
 https://github.com/MortenMiddelthon/powerduino
 
