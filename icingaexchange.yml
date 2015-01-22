@@ -1,0 +1,18 @@
+name: check_power_usage
+description: "file:///README.md"
+url: "https://github.com/MortenMiddelthon/powerduino"
+tags: Statistic, power, kWh
+vendor: Arduino, Linux
+target: Reporting, Sensor
+type: Plugin
+license: gplv3
+releases: 
+  - 
+      name: 1.0
+      description: "1.0 Release"
+      files: 
+       - 
+          name: check_sar_perf.py
+          url: "file:///icinga/powerusage"
+          description: "Icinga check plugin"
+          checksum: 1b0d686cc1ecc379063e74adc0e02e64
