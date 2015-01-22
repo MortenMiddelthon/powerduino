@@ -1,4 +1,9 @@
 # powerduino
+
+Please check the GitHub site for all the examples and requied files:
+
+https://github.com/MortenMiddelthon/powerduino
+
 Monitor power usage (kWh) with Arduino and Nagios / Icinga
 
 This project includes the following components:
