@@ -1,4 +1,4 @@
-name: check_power_usage
+name: powerduino
 description: "file:///README.md"
 url: "https://github.com/MortenMiddelthon/powerduino"
 tags: Statistic, power, kWh
@@ -12,7 +12,12 @@ releases:
       description: "1.0 Release"
       files: 
        - 
-          name: check_sar_perf.py
+          name: powerusage
           url: "file:///icinga/powerusage"
           description: "Icinga check plugin"
           checksum: 1b0d686cc1ecc379063e74adc0e02e64
+       - 
+          name: readpowerusage.pl
+          url: "file:///icinga/readpowerusage.pl"
+          description: "Arduino USB serial reader"
+          checksum: c234caea0867256c291ccc9df13202cb
