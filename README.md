@@ -20,6 +20,21 @@ connected to ground. The Arduino will output it's reading over USB serial.
 To get a proper fit over the pulse light from your power meter you can print out and use the
 included 3D model
 
+Parts list:
+-----------
+- Arduino board, f.ex Micro, Adafruit Pro Trinket or similar:
+	- http://www.adafruit.com/product/2000
+	- http://www.adafruit.com/products/1086
+- 5mm photo resistor:
+	- http://www.adafruit.com/product/161
+- Two pin terminal block:
+	- http://www.adafruit.com/products/724
+- Wiring
+- 10k Ohm resistor:
+	- http://goo.gl/ptRL7R
+- Perf/proto/breadboard:
+	- http://www.adafruit.com/categories/124
+
 Icinga/nagios setup
 -------------------
 The included perl script will try to read from the USB port where the Arduino is connected. 
