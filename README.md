@@ -20,6 +20,10 @@ connected to ground. The Arduino will output it's reading over USB serial.
 To get a proper fit over the pulse light from your power meter you can print out and use the
 included 3D model
 
+Adafruit has en excellent tutorial on how to connect a photo resistor to an Arduino:
+
+https://learn.adafruit.com/photocells/using-a-photocell
+
 Parts list:
 -----------
 - Arduino board, f.ex Micro, Adafruit Pro Trinket or similar:
